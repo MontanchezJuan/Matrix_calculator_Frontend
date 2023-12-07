@@ -1,0 +1,11 @@
+<select
+  (change)="onSelect(selectedValue.value)"
+  class="form-select"
+  aria-label="Default select example"
+  #selectedValue
+>
+  <option value="3" selected>3</option>
+  <option *ngFor="let number of numbers" [value]="number">
+    {{ number }}
+  </option>
+</select>
