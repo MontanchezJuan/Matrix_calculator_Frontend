@@ -1,15 +1,19 @@
 <div class="row mb-4">
   <shared-select-variable
     (onMatrix)="changeMatrix($event)"
-    (onVector)="changeVector($event)"
-  ></shared-select-variable>
+    (onFormVector)="changeFormVector($event)"
+  >
+  </shared-select-variable>
 </div>
 
 <div class="row">
   <div class="col">
     <div class="row">
       <div
-        *ngFor="let variable of variables; let i = index"
+        *ngFor="
+          let controlName of formVector.controls | keyvalue;
+          let i = index
+        "
         style="
           width: 100px;
           height: 40px;
@@ -17,22 +21,20 @@
           display: flex;
         "
       >
-        <input
-          (keyup)="
-            onKeyPress(
-              txtInputVector.value,
-              txtInputVector.id,
-              true,
-              txtInputVector
-            )
-          "
-          [id]="variable"
-          [value]="0"
-          class="form-control"
-          type="number"
-          #txtInputVector
-        />
-        {{ variable }}
+        <form [formGroup]="formVector">
+          <input
+            (keyup)="
+              onKeyPress(
+                formVector.get(controlName.key)?.value,
+                controlName.key,
+                true
+              )
+            "
+            [formControlName]="controlName.key"
+            class="form-control"
+            type="number"
+          />
+        </form>
       </div>
     </div>
   </div>
@@ -41,14 +43,16 @@
     <div *ngFor="let a of matrix; let i = index" class="row">
       <input
         *ngFor="let variable of matrix; let j = index"
-        (keyup)="onKeyPress(txtInput.value, txtInput.id, false, txtInput)"
+        (keyup)="onKeyPress(txtInput.value, txtInput.id, false)"
         [id]="i.toString() + j.toString()"
         [value]="a[j]"
         class="form-control"
-        style="width: 50px; height: 50px"
+        style="width: 45px; height: 45px"
         type="number"
         #txtInput
       />
     </div>
   </div>
 </div>
+
+<button class="btn btn-primary" (click)="log()">Calcular</button>

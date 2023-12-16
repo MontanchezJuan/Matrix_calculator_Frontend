@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'shared-select-variable',
@@ -7,11 +8,14 @@ import { Component, Output, EventEmitter } from '@angular/core';
 })
 export class SelectVariableComponent {
   public numbers = [4, 5, 6, 7, 8, 9, 10];
+  public formVector: FormGroup = this.fb.group({});
 
   @Output()
   public onMatrix: EventEmitter<number[][]> = new EventEmitter();
   @Output()
-  public onVector: EventEmitter<string[]> = new EventEmitter();
+  public onFormVector: EventEmitter<FormGroup> = new EventEmitter();
+
+  constructor(private fb: FormBuilder) {}
 
   onSelect(value: string): void {
     const number = parseInt(value);
@@ -20,20 +24,20 @@ export class SelectVariableComponent {
 
   createMatrix(number: number): void {
     const matrix: number[][] = [];
-    let count: number = 0;
-    const variables: string[] = [];
+
+    this.formVector = this.fb.group({});
 
     for (let i = 0; i < number; i++) {
       matrix[i] = [];
       for (let j = 0; j < number; j++) {
         matrix[i][j] = 0;
         if (j >= i) {
-          variables[count] = `${i}${j}`;
-          count = count + 1;
+          this.formVector.addControl(`${i}${j}`, new FormControl<number>(0));
         }
       }
     }
-    this.onVector.emit(variables);
+
     this.onMatrix.emit(matrix);
+    this.onFormVector.emit(this.formVector);
   }
 }

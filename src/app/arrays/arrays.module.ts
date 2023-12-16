@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { ArraysRoutingModule } from './arrays-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -9,6 +10,11 @@ import { OptimizationPageComponent } from './pages/optimization-page/optimizatio
 
 @NgModule({
   declarations: [LayoutPageComponent, OptimizationPageComponent],
-  imports: [CommonModule, ArraysRoutingModule, SharedModule],
+  imports: [
+    CommonModule,
+    ArraysRoutingModule,
+    ReactiveFormsModule,
+    SharedModule,
+  ],
 })
 export class ArraysModule {}
