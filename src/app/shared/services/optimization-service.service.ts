@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OptimizationResponse } from '../interfaces/optimization-response.interface';
 
+interface Body {
+  matriz: number[][];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -11,7 +15,7 @@ export class OptimizationServiceService {
 
   constructor(private http: HttpClient) {}
 
-  optimizar(matrix: number[][]): Observable<OptimizationResponse> {
+  optimizar(matrix: Body): Observable<OptimizationResponse> {
     return this.http.post<OptimizationResponse>(
       `${this.backend}/valor_propio_dominante`,
       matrix

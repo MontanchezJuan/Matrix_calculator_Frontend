@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
+import { OptimizationServiceService } from '../../../shared/services/optimization-service.service';
+
+import katex from 'katex';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-optimization-page',
   templateUrl: './optimization-page.component.html',
@@ -22,7 +27,10 @@ export class OptimizationPageComponent {
     '22': new FormControl<number>(0),
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private os: OptimizationServiceService
+  ) {}
 
   onKeyPress(value: string, id: string, fromVector: boolean): void {
     if (!value) return;
@@ -73,7 +81,45 @@ export class OptimizationPageComponent {
     this.formVector = formVector;
   }
 
-  log() {
-    console.log(this.matrix);
+  optimize() {
+    const body = { matriz: this.matrix };
+
+    this.os.optimizar(body).subscribe({
+      next: (response) => {
+        Swal.fire({
+          color: '#0F0F0F',
+          confirmButtonColor: '#0F0F0F',
+          icon: 'success',
+          iconColor: '#0F0F0F',
+          text: `${response.valor_propio_dominante}`,
+          title: 'Valor propio dominante',
+        }).then(() => {
+          Swal.fire({
+            color: '#0F0F0F',
+            confirmButtonColor: '#0F0F0F',
+            icon: 'success',
+            iconColor: '#0F0F0F',
+            text: `[${response.vector_propio_dominante}]`,
+            title: 'Vector propio dominante',
+          });
+        });
+      },
+      error: (error) => {
+        Swal.fire({
+          color: '#0F0F0F',
+          confirmButtonColor: '#0F0F0F',
+          icon: 'error',
+          iconColor: '#0F0F0F',
+          text: error.message,
+          title: 'Error',
+        });
+      },
+    });
+  }
+
+  quadratic(number: string): string {
+    const split = number.split('');
+    return katex.renderToString(`x^${split[0]} x^${split[1]}`);
+    // return `<span class="katex"><span class="katex-inner">x</span><sup>${split[0]}</sup></span> <span class="katex"><span class="katex-inner">x</span><sup>${split[1]}</sup></span>`;
   }
 }
